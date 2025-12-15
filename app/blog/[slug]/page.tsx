@@ -24,8 +24,9 @@ export async function generateStaticParams() {
 }
 
 // Generate metadata
-export async function generateMetadata({ params }: { params: { slug: string } }) {
-    const post = await getPostBySlug(params.slug);
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
+    const { slug } = await params;
+    const post = await getPostBySlug(slug);
     if (!post) return {};
 
     return {
@@ -34,14 +35,15 @@ export async function generateMetadata({ params }: { params: { slug: string } })
     };
 }
 
-export default async function BlogPostPage({ params }: { params: { slug: string } }) {
-    const post = await getPostBySlug(params.slug);
+export default async function BlogPostPage({ params }: { params: Promise<{ slug: string }> }) {
+    const { slug } = await params;
+    const post = await getPostBySlug(slug);
 
     if (!post) {
         notFound();
     }
 
-    const relatedPosts = await getRelatedPosts(params.slug);
+    const relatedPosts = await getRelatedPosts(slug);
 
     return (
         <>
@@ -145,7 +147,7 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
                     </Card>
 
                     {/* Comments Section */}
-                    <Comments slug={params.slug} />
+                    <Comments slug={slug} />
 
                     {/* Related Posts */}
                     {relatedPosts.length > 0 && (
