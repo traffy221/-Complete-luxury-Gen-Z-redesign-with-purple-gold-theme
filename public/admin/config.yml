@@ -2,23 +2,79 @@ backend:
   name: git-gateway
   branch: main
 
-media_folder: "public/images"
-public_folder: "/images"
+# Configuration de téléchargement des médias
+media_folder: "public/images/uploads"
+public_folder: "/images/uploads"
 
+# Collections de contenu
 collections:
   - name: "blog"
-    label: "Blog"
+    label: "📝 Articles de Blog"
+    label_singular: "Article"
     folder: "content/posts"
     create: true
     slug: "{{slug}}"
     extension: "mdx"
     format: "frontmatter"
+    editor:
+      preview: false
     fields:
-      - {label: "Title", name: "title", widget: "string"}
-      - {label: "Publish Date", name: "date", widget: "datetime"}
-      - {label: "Author", name: "author", widget: "string"}
-      - {label: "Excerpt", name: "excerpt", widget: "text"}
-      - {label: "Category", name: "category", widget: "select", options: ["Technology", "AI", "Web Development", "Design"]}
-      - {label: "Tags", name: "tags", widget: "list"}
-      - {label: "Cover Image", name: "coverImage", widget: "image", required: false}
-      - {label: "Body", name: "body", widget: "markdown"}
+      - label: "Titre"
+        name: "title"
+        widget: "string"
+        hint: "Le titre principal de votre article"
+      
+      - label: "Date de publication"
+        name: "date"
+        widget: "datetime"
+        format: "YYYY-MM-DD"
+        date_format: "DD/MM/YYYY"
+        time_format: false
+        default: ""
+      
+      - label: "Résumé"
+        name: "excerpt"
+        widget: "text"
+        hint: "Un court résumé de l'article (2-3 phrases)"
+        pattern: ['^.{50,300}$', "Le résumé doit contenir entre 50 et 300 caractères"]
+      
+      - label: "Catégorie"
+        name: "category"
+        widget: "select"
+        options:
+          - { label: "💭 Réflexions", value: "Réflexions" }
+          - { label: "🌍 Société", value: "Société" }
+          - { label: "🧠 Philosophie", value: "Philosophie" }
+          - { label: "❤️ Humanité", value: "Humanité" }
+          - { label: "🎨 Culture", value: "Culture" }
+          - { label: "🚀 Jeunesse", value: "Jeunesse" }
+        default: "Réflexions"
+      
+      - label: "Tags"
+        name: "tags"
+        widget: "list"
+        hint: "Ajoutez des tags pertinents (ex: amour, société, jeunesse)"
+        min: 1
+        max: 10
+        field:
+          label: Tag
+          name: tag
+          widget: string
+      
+      - label: "Temps de lecture"
+        name: "readingTime"
+        widget: "string"
+        default: "5 min"
+        hint: "Estimez le temps de lecture (ex: 5 min, 10 min)"
+        pattern: ['^[0-9]+ min$', "Format: X min (ex: 5 min)"]
+      
+      - label: "Image de couverture"
+        name: "coverImage"
+        widget: "image"
+        required: false
+        hint: "Image principale de l'article (optionnel)"
+      
+      - label: "Contenu"
+        name: "body"
+        widget: "markdown"
+        hint: "Écrivez votre article en Markdown"
